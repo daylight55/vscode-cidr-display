@@ -1,6 +1,6 @@
 # CIDR Display - VSCode Extension
 
-![image](https://github.com/user-attachments/assets/803b60f4-f8e1-404d-a2a4-10b47d608917)
+![image](https://github.com/user-attachments/assets/7b6abef5-b5c8-4999-986a-d2e43b96e197)
 
 A Visual Studio Code extension that provides detailed information about CIDR notation when hovering over IP addresses with subnet masks. It also displays the number of available IP addresses inline.
 
