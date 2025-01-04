@@ -1,32 +1,24 @@
 coverage:
-  paths:
-    - coverage/lcov.info
-  display:
-    name: Coverage Report
-  columns:
-    - type: files
-      format: table
-    - type: lines
-      format: table
-    - type: functions
-      format: table
-    - type: branches
-      format: table
-
+  if: true
+codeToTestRatio:
+  code:
+    - 'src/**/*.ts'
+    - '!src/__tests__/**/*.ts'
+  test:
+    - 'src/__tests__/**/*.ts'
+testExecutionTime:
+  if: true
 diff:
-  coverage:
-    paths:
-      - coverage/lcov.info
-
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}
 comment:
   if: is_pull_request
-  hideFooterLink: true
-
-coverage-threshold:
-  total:
-    lines: 80
-  diff:
-    lines: 80
-
-badge:
-  path: docs/badges/coverage.svg
+report:
+  if: is_default_branch
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}
+badges:
+  datastores:
+    - local://badges
+push:
+  enable: true
