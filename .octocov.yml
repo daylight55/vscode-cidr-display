@@ -1,0 +1,32 @@
+coverage:
+  paths:
+    - coverage/lcov.info
+  display:
+    name: Coverage Report
+  columns:
+    - type: files
+      format: table
+    - type: lines
+      format: table
+    - type: functions
+      format: table
+    - type: branches
+      format: table
+
+diff:
+  coverage:
+    paths:
+      - coverage/lcov.info
+
+comment:
+  if: is_pull_request
+  hideFooterLink: true
+
+coverage-threshold:
+  total:
+    lines: 80
+  diff:
+    lines: 80
+
+badge:
+  path: docs/badges/coverage.svg
