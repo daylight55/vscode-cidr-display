@@ -2,7 +2,7 @@
   "name": "vscode-cidr-display",
   "displayName": "CIDR Display",
   "description": "Display IP range and number of IPs when hovering over CIDR notation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "daylight55",
   "license": "MIT",
   "repository": {
