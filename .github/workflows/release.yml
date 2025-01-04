@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install mise
+        run: curl https://mise.jdx.dev/install.sh | sh
+
+      - name: Setup Node.js using mise
+        run: |
+          mise install
+          mise use node
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate release note
+        id: release_note
+        run: |
+          # タグ間の変更を取得
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # 最初のリリースの場合
+            CHANGES=$(git log --pretty=format:"* %s" HEAD)
+          else
+            CHANGES=$(git log --pretty=format:"* %s" ${PREVIOUS_TAG}..HEAD)
+          fi
+
+          # リリースノートをファイルに出力
+          echo "# What's Changed" > release_note.md
+          echo "${CHANGES}" >> release_note.md
+
+          # リリースノートを環境変数に設定
+          echo "RELEASE_NOTE<<EOF" >> $GITHUB_ENV
+          cat release_note.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Run tests
+        run: npm run test:coverage
+
+      - name: Build VSIX
+        run: |
+          npm install -g @vscode/vsce
+          vsce package
+
+      - name: Publish to Marketplace
+        run: |
+          npm install -g @vscode/vsce
+          vsce publish -p ${{ secrets.VSCE_PAT }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: release_note.md
+          files: '*.vsix'
+          draft: false
+          prerelease: false
